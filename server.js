@@ -3,22 +3,21 @@
 const express    = require('express'),
       bodyParser = require('body-parser'),
       mongoose   = require('mongoose'),
-
+      config     = require('./config'),
       app        = express(),
-      mongoDB    = 'mongodb://localhost/project-web-avance',
-      db         = mongoose.connection,
+      port       = process.env.PORT || 3000,
 
-      usersCtrl = require('./controllers/usersCtrl'),
+      usersCtrl  = require('./controllers/usersCtrl'),
       pizzasCtrl = require('./controllers/pizzasCtrl');
 
-mongoose.connect(mongoDB, { useMongoClient: true });
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+mongoose.connect(config.database.local, {useMongoClient: true});
+mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(bodyParser.json());
 
-app.use('/users', usersCtrl);
 app.use('/pizzas', pizzasCtrl);
+app.use('/users', usersCtrl);
 
-app.listen(3000, () => {
-    console.log('Example app listening on port 3000!')
+app.listen(port, () => {
+    console.log(`project-web-avance listening on port ${port}`);
 });

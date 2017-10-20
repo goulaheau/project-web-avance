@@ -1,12 +1,15 @@
 'use strict';
 
 const mongoose = require('mongoose'),
-      Schema   = mongoose.Schema,
+      Schema   = mongoose.Schema;
 
-      pizzaSchema = new Schema({
-          name: String
-      }),
+const pizzaSchema = new Schema({
+    name: {
+        type    : String,
+        required: true
+    }
+});
 
-      Pizza = mongoose.model('Pizza', pizzaSchema);
+const Pizza = mongoose.model('Pizza', pizzaSchema);
 
 module.exports = Pizza;

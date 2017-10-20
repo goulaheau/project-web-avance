@@ -1,6 +1,7 @@
 'use strict';
 
-const express = require('express'),
+const _       = require('lodash'),
+      express = require('express'),
       router  = express.Router(),
 
       Pizza   = require('../models/pizza');
@@ -8,66 +9,77 @@ const express = require('express'),
 router.get('/', (req, res) => {
     Pizza.find((err, pizza) => {
         if (err) {
-            res.status(500).send(err)
-        } else {
-            res.status(200).send(pizza);
+            return res.status(500).send(err);
         }
+
+        return res.status(200).send(pizza);
     });
 });
 
 router.get('/:id', (req, res) => {
     Pizza.findById(req.params.id, (err, pizza) => {
         if (err) {
-            res.status(500).send(err)
+            return res.status(500).send(err);
         } else if (pizza === null) {
-            res.status(404).send('No pizza found with that ID')
-        } else {
-            res.status(200).send(pizza)
+            return res.status(404);
         }
+
+        return res.status(200).send(pizza);
     });
 });
 
 router.post('/', (req, res) => {
     const pizza = new Pizza(req.body);
-    pizza.save((err, pizza) => {
+
+    pizza.validate(err => {
         if (err) {
-            res.status(500).send(err);
+            return res.status(422).send(err);
         }
-        res.status(200).send(pizza);
+
+        pizza.save((err, pizza) => {
+            if (err) {
+                return res.status(500).send(err);
+            }
+
+            return res.status(200).send(pizza);
+        });
     });
 });
 
 router.put('/:id', (req, res) => {
     Pizza.findById(req.params.id, (err, pizza) => {
         if (err) {
-            res.status(500).send(err);
+            return res.status(500).send(err);
         } else if (pizza === null) {
-            res.status(404).send('No pizza found with that ID');
-        } else {
-            pizza.name = req.body.name || pizza.name;
+            return res.status(404);
+        }
+
+        _.merge(pizza, req.body);
+        pizza.validate(err => {
+            if (err) {
+                return res.status(422).send(err);
+            }
+
             pizza.save((err, pizza) => {
                 if (err) {
-                    res.status(500).send(err)
+                    return res.status(500).send(err);
                 }
-                res.status(200).send(pizza);
+
+                return res.status(200).send(pizza);
             });
-        }
+        });
     });
 });
 
 router.delete('/:id', (req, res) => {
     Pizza.findByIdAndRemove(req.params.id, (err, pizza) => {
         if (err) {
-            res.status(500).send(err);
+            return res.status(500).send(err);
         } else if (pizza === null) {
-            res.status(404).send('No pizza found with that ID');
-        } else {
-            let response = {
-                message: 'Pizza successfully deleted',
-                pizza: pizza
-            };
-            res.status(200).send(response);
+            return res.status(404);
         }
+
+        return res.status(200);
     });
 });
 

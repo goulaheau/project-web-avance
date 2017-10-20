@@ -2,39 +2,39 @@
 
 const mongoose = require('mongoose'),
       bcrypt   = require('bcrypt'),
-      Schema   = mongoose.Schema,
+      Schema   = mongoose.Schema;
 
-      userSchema = new Schema({
-          username: {
-              type: String,
-              lowercase: true,
-              unique: true,
-              required: true
-          },
-          password: {
-              type: String,
-              required: true
-          }
-      });
+const userSchema = new Schema({
+    username: {
+        type    : String,
+        unique  : true,
+        required: true
+    },
+    password: {
+        type    : String,
+        required: true
+    }
+});
 
 userSchema.pre('save', function (next) {
     if (this.isModified('password') || this.isNew) {
         bcrypt.genSalt(10, (err, salt) => {
             if (err) {
-                next(err);
-            } else {
-                bcrypt.hash(this.password, salt, (err, hash) => {
-                    if (err) {
-                        next(err);
-                    } else {
-                        this.password = hash;
-                        next();
-                    }
-                });
+                return next(err);
             }
+
+            bcrypt.hash(this.password, salt, (err, hash) => {
+                if (err) {
+                    return next(err);
+                }
+
+                this.password = hash;
+
+                return next();
+            });
         });
     } else {
-        next();
+        return next();
     }
 });
 
@@ -43,7 +43,8 @@ userSchema.methods.comparePassword = function (pw, cb) {
         if (err) {
             return cb(err);
         }
-        cb(null, isMatch);
+
+        return cb(null, isMatch);
     });
 };
 
