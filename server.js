@@ -5,19 +5,19 @@ const express    = require('express'),
       mongoose   = require('mongoose'),
       config     = require('./config'),
       app        = express(),
-      port       = process.env.PORT || 3000,
 
-      usersCtrl  = require('./controllers/usersCtrl'),
-      pizzasCtrl = require('./controllers/pizzasCtrl');
+      pizzas     = require('./controllers/pizzas'),
+      users      = require('./controllers/users');
 
 mongoose.connect(config.database.local, {useMongoClient: true});
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
-app.use('/pizzas', pizzasCtrl);
-app.use('/users', usersCtrl);
+app.use('/pizzas', pizzas);
+app.use('/users', users);
 
-app.listen(port, () => {
-    console.log(`project-web-avance listening on port ${port}`);
+app.listen(config.port, () => {
+    console.log(`project-web-avance listening on port ${config.port}`);
 });

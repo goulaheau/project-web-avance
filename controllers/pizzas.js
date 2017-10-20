@@ -1,10 +1,9 @@
 'use strict';
 
 const _       = require('lodash'),
-      express = require('express'),
-      router  = express.Router(),
+      router  = require('express').Router(),
 
-      Pizza   = require('../models/pizza');
+      Pizza   = require('../models/Pizza');
 
 router.get('/', (req, res) => {
     Pizza.find((err, pizza) => {

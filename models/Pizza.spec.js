@@ -1,9 +1,9 @@
 'use strict';
 
 const {expect} = require('chai'),
-      Pizza    = require('./pizza');
+      Pizza    = require('./Pizza');
 
-describe('Pizza', () => {
+describe('Pizza Model', () => {
     it('should be invalid if name is empty', done => {
         const pizza = new Pizza();
 

@@ -1,4 +1,4 @@
 'use strict';
 
-require('./models/pizza.spec');
-require('./controllers/pizzasCtrl.spec');
+require('./models/Pizza.spec');
+require('./controllers/pizzas.spec');

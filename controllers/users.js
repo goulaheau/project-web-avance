@@ -5,7 +5,7 @@ const express = require('express'),
       config  = require('../config'),
       router  = express.Router(),
 
-      User    = require('../models/user');
+      User    = require('../models/User');
 
 router.post('/register', (req, res) => {
     const user = new User(req.body);
